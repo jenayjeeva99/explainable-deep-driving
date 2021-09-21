@@ -53,7 +53,7 @@ def csv_dict_reader(file_obj):
     return csv.DictReader(file_obj, delimiter=',')
 
 def get_vid_info(file_obj):
-    if platform == 'darwin':
+    if platform == 'win32':
         nFrames     = int(file_obj.get(cv2.CAP_PROP_FRAME_COUNT))
         img_width   = int(file_obj.get(cv2.CAP_PROP_FRAME_WIDTH))
         img_height  = int(file_obj.get(cv2.CAP_PROP_FRAME_HEIGHT))

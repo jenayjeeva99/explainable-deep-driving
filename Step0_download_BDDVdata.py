@@ -26,9 +26,10 @@ from    src.utils       import *
 # Main function
 #----------------------------------------------------------------------
 if __name__ == "__main__":
-    if platform == 'linux':
+
+    if platform == 'win32':
         config = dict2(**{
-            "annotations": './data/Sample.csv',     # contains (video url, start, end, action, justification)
+            "annotations": './data/BDD-X-Annotations_v1.csv',     # contains (video url, start, end, action, justification)
             "vid_path":    './data/Videos/videos/'})
     else:
         raise NotImplementedError

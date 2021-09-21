@@ -43,7 +43,7 @@ if __name__ == "__main__":
   parser.add_argument('--extractAttn',   type=bool,  default=True,  help='extract attention maps')
   args = parser.parse_args()
 
-  if platform == 'linux':
+  if platform == 'win32':
     args.model      = "./model/VA/model-0.ckpt"
     args.savepath   = "./result/VA/"
     config.timelen  = 400+3

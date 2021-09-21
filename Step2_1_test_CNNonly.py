@@ -45,7 +45,7 @@ if __name__ == "__main__":
   parser.add_argument('--gpu_fraction',  type=float,default=0.7,   help='GPU usage limit')
   args = parser.parse_args()
 
-  if platform == 'linux':
+  if platform == 'win32':
     args.model    = "./model/CNN/model-0.ckpt"
     args.savepath = "./result/CNN/"
     config.batch_size = 1

@@ -40,7 +40,7 @@ from    src.utils       import *
 if __name__ == "__main__":
     if platform == 'linux':
         config = dict2(**{
-            "annotations":  './data/Sample.csv', # (video url, start, end, action, justification)
+            "annotations":  './data/BDD-X-Annotations_v1.csv', # (video url, start, end, action, justification)
             "save_path":    './data/processed/',
             "data_path":    './data/Videos/',
             "chunksize":    20 })
@@ -106,13 +106,13 @@ if __name__ == "__main__":
 
                 # MuteVideo data set seems to have different label format.
                 # Will use first eight codes
-                json2read = glob.glob('%sinfo/*/*%s*.json'%(config.data_path, vidName[:8]))
-                if json2read:
-                   json2read = json2read[0]
-                else:
-                   print( bcolors.FAIL + "Unable to read json file: {}".format(str2find) + bcolors.ENDC )
-                   vidNames_notUSED.append(str(videoid) + "_" + str(vidName))
-                   continue
+                #json2read = glob.glob('%sinfo/*/*%s*.json'%(config.data_path, vidName[:8]))
+                #if json2read:
+                #    json2read = json2read[0]
+                #else:
+                #    print( bcolors.FAIL + "Unable to read json file: {}".format(str2find) + bcolors.ENDC )
+                #    vidNames_notUSED.append(str(videoid) + "_" + str(vidName))
+                #    continue
 
             # keys: timestamp, longitude, course, latitude, speed, accuracy
             timestamp, longitude, course, latitude, speed, accuracy, gps_x, gps_y = [], [], [], [], [], [], [], []
@@ -244,16 +244,17 @@ if __name__ == "__main__":
                     cnt += 1
                     if gotImage:
                         if cnt%3==0: # reduce to 10Hz
-                            #frame = frame.swapaxes(1,0)
-
+                            height, width, channels = frame.shape
+                            # print("height: {} \nwidth: {} \n".format(height, width))
+                            if (height > width): frame = frame.swapaxes(1,0)
+                            else: frame = frame
+                            # print("height: {} \nwidth: {} \n".format(height, width))
                             if rotation > 0: 	frame = cv2.flip(frame,0)
                             elif rotation < 0: 	frame = cv2.flip(frame,1)
                             else: 				frame = frame.swapaxes(1,0)
 
                             frame = cv2.resize(frame, None, fx=0.125*scalefactor, fy=0.125*scalefactor)
                             
-                            #print(frame.shape)
-                            #print(scalefactor)
                             assert frame.shape == (90*scalefactor, 160*scalefactor, 3)
                             
                             if cnt%100==0:
@@ -314,12 +315,3 @@ if __name__ == "__main__":
 
     np.save(config.save_path + 'vidNames_notUSED.npy', vidNames_notUSED)
     
-
-
-
-    
-
-
-
-
-
