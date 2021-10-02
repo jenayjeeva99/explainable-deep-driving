@@ -3,7 +3,7 @@ class dict2(dict):
         dict.__init__(self, kwargs)
         self.__dict__ = self
 
-MODE = "VA"
+MODE = "CNN"
 if MODE=="CNN":
     config = dict2(**{
         "mode":         "CNN",
