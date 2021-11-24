@@ -104,14 +104,21 @@ def client_generator(port=5557, host="localhost", hwm=20):
   Defaults to 10. Be sure to set the corresponding HWM on the
   receiving end as well.
   """
+  print("Starting client gen")
   context = zmq.Context()
   socket  = context.socket(zmq.PULL)
   socket.set_hwm(hwm)
   socket.connect("tcp://{}:{}".format(host, port))
   logger.info('client started')
+
+  print("Client started")
+  i = 0
   while True:
     data = recv_arrays(socket)
+    # print(data)
+    # print("data received")
     yield tuple(data)
+    # print('data yielded...')
 
 def start_server(data_stream, port=5557, hwm=20):
   """Start a data processing server.
@@ -160,6 +167,8 @@ def start_server(data_stream, port=5557, hwm=20):
       data = None
       stop = True
       logger.debug("sending StopIteration")
+    
+    print('send data to client...')
     send_arrays(socket, data, stop=stop)
 
 
@@ -192,11 +201,14 @@ if __name__ == "__main__":
     else:               filenames = os.path.join(config.h5path, 'train.txt')
 
   with open(filenames, 'r') as f:
-    file_paths = ['%s%s/%s.h5'%(config.h5path, str_data, x.strip()) for x in f.readlines()]
+    file_paths = [r'%s%s/%s.h5'%(config.h5path, str_data, x.strip()) for x in f.readlines()]
+
+  # for name in file_paths:
+    # print(name)
 
   gen = datagen(file_paths, time_len=config.timelen, batch_size=config.batch_size, ignore_goods=args.nogood)
   start_server(gen, port=args.port, hwm=args.buffer)
-
+  # start_server(gen, port=5556, hwm=args.buffer)
 
 
 

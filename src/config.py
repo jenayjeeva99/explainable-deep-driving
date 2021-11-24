@@ -3,7 +3,7 @@ class dict2(dict):
         dict.__init__(self, kwargs)
         self.__dict__ = self
 
-MODE = "CNN"
+MODE = "VA"
 if MODE=="CNN":
     config = dict2(**{
         "mode":         "CNN",
@@ -22,7 +22,7 @@ if MODE=="CNN":
         "alpha":        1.0,    # coefficient for exp smoothing
         "UseFeat":      False,
         "maxiter":      60100,
-        "save_steps":   5000,
+        "save_steps":   1000,
         "val_steps":    10, #100,
         "model_path":   "./model/CNN/",
         "pretrained_model_path": None,
@@ -51,7 +51,7 @@ elif MODE=="VA":
         "UseFeat":      True,
         "alpha":        1.0,
         "dim_hidden":   1024,
-        "batch_size":   2,     #20,    
+        "batch_size":   20,     #20,    
         "timelen":      20+3,  #20+3, 
         "ctx_shape":    [240,64],
         "alpha_c":      0.0})

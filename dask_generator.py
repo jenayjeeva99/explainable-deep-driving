@@ -16,7 +16,7 @@ from    src.config          import *
 import  scipy.ndimage       as ndi
 from    scipy               import interpolate
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # given a series and alpha, return series of smoothed points
@@ -44,6 +44,7 @@ def concatenate(camera_names, time_len):
         hdf5_camera.append(c5)
 
         # Human-demonstrated control commands
+        # print(tword)
         curvature_value     = t5["curvature"][:]
         accelerator_value   = t5["accelerator"][:]
         speed_value         = t5["speed"][:]
@@ -113,7 +114,10 @@ def concatenate(camera_names, time_len):
     except IOError:
       import traceback
       traceback.print_exc()
-      print ("failed to open", tword)
+      # print ("failed to open: ", tword)
+    except KeyError:
+      print ("curvature does not exist: ", tword)
+      continue
 
   course      = np.concatenate(course,      axis=0)
   speed       = np.concatenate(speed,       axis=0)
@@ -183,10 +187,21 @@ def datagen(filter_files, time_len=1, batch_size=256, ignore_goods=False):
         # GET X_BATCH
         # low quality loop
         for es, ee, x in c5x:
+
+          # print(x.shape)
+          
+
+
           if i >= es and i < ee:
-            X_batch[count] = x[i-es-time_len+1:i-es+1]
+            # print("index:",i-es-time_len+1,i-es+1)
+            # print("shape: ", x[i-es-time_len+1:i-es+1].shape)
+            if (i-es-time_len+1 < 0):
+              X_batch[count] = x[0:time_len]
+            else: X_batch[count] = x[i-es-time_len+1:i-es+1]
             break
 
+        if (time_len<=2):
+          print("timelen",time_len)
         course_batch[count]       = np.copy(course[     i-time_len+1:i+1])[:, None]
         speed_batch[count]        = np.copy(speed[      i-time_len+1:i+1])[:, None]
         curvature_batch[count]    = np.copy(curvature[  i-time_len+1:i+1])[:, None]

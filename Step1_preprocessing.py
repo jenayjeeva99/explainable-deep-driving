@@ -38,7 +38,7 @@ from    src.utils       import *
 # Main function
 #----------------------------------------------------------------------
 if __name__ == "__main__":
-    if platform == 'linux':
+    if platform == 'win32':
         config = dict2(**{
             "annotations":  './data/BDD-X-Annotations_v1.csv', # (video url, start, end, action, justification)
             "save_path":    './data/processed/',
@@ -244,11 +244,11 @@ if __name__ == "__main__":
                     cnt += 1
                     if gotImage:
                         if cnt%3==0: # reduce to 10Hz
-                            height, width, channels = frame.shape
-                            # print("height: {} \nwidth: {} \n".format(height, width))
-                            if (height > width): frame = frame.swapaxes(1,0)
-                            else: frame = frame
-                            # print("height: {} \nwidth: {} \n".format(height, width))
+                            # print("WIDTH: {}HEIGHT {}\n".format(img_width, img_height))
+                            # if (img_height > img_width): frame = frame.swapaxes(1,0)
+
+                            frame = frame.swapaxes(1,0)
+
                             if rotation > 0: 	frame = cv2.flip(frame,0)
                             elif rotation < 0: 	frame = cv2.flip(frame,1)
                             else: 				frame = frame.swapaxes(1,0)

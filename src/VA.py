@@ -17,7 +17,7 @@
 # Remark
 #|**********************************************************************;
 
-import tensorflow.compat.v1   as      tf
+import tensorflow   as      tf
 from   src.config   import  *
 
 class VA(object):

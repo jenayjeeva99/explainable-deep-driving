@@ -37,16 +37,16 @@ from    src.preprocessor  import  *
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Path viewer')
-  parser.add_argument('--getscore',      type=bool, default=False, help='get performance scores')
+  parser.add_argument('--getscore',      type=bool, default=True, help='get performance scores')
   parser.add_argument('--showvideo',     type=bool, default=False, help='show video')
   parser.add_argument('--useCPU',        type=bool, default=False, help='without GPU processing')
   parser.add_argument('--validation',    type=bool, default=False, help='use validation set')
   parser.add_argument('--extractFeature',type=bool, default=True,  help='extract conv features')
-  parser.add_argument('--gpu_fraction',  type=float,default=0.7,   help='GPU usage limit')
+  parser.add_argument('--gpu_fraction',  type=float,default=0.8,   help='GPU usage limit')
   args = parser.parse_args()
 
   if platform == 'win32':
-    args.model    = "./model/CNN/model-0.ckpt"
+    args.model    = "./model/CNN/model-60000.ckpt"
     args.savepath = "./result/CNN/"
     config.batch_size = 1
   else:
@@ -92,10 +92,14 @@ if __name__ == "__main__":
   for dataset in fname:
 
     # load dataset
-    log  = h5py.File(config.h5path + "log/" + dataset + ".h5", "r")
-    cam  = h5py.File(config.h5path + "cam/" + dataset + ".h5", "r")
-    nImg     = cam['X'].shape[0]
-
+    try:
+      log  = h5py.File(config.h5path + "log/" + dataset + ".h5", "r")
+      cam  = h5py.File(config.h5path + "cam/" + dataset + ".h5", "r")
+      nImg     = cam['X'].shape[0]
+    except OSError:
+      print("File not found");
+      continue
+      
     # preprocess logs
     curvature_value     = preprocess_others(log["curvature"][:], nImg) 
     accelerator_value   = preprocess_others(log["accelerator"][:], nImg) 
@@ -153,7 +157,7 @@ if __name__ == "__main__":
         plt.imshow(img2draw)
         plt.axis('off')
         plt.draw()
-        plt.pause(0.01)
+        plt.pause(0.0005)
 
     if args.getscore:
       _fname, _pred_acc, _target_acc, _pred_course, _target_course, _speed = map(np.array, zip(*accumResult))
@@ -166,11 +170,3 @@ if __name__ == "__main__":
       print(config.h5path + "feat/" + dataset + ".h5")
       f     = h5py.File(config.h5path + "feat/" + dataset + ".h5", "w")
       dset  = f.create_dataset("/X", data=feats, chunks=(20,64,12,20))
-
-
-
-
-
-
-
-
